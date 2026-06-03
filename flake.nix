@@ -28,18 +28,24 @@
         # Create standard directories
         mkdir -p $out/lib/firmware/qcom/sm8550/sheng
         mkdir -p $out/lib/firmware/rfsa/adsp
+        mkdir -p $out/lib/firmware/nanosic
         mkdir -p $out/bin
         mkdir -p $out/lib64
         mkdir -p $out/etc/sensors
 
         # 1. Base firmware
         if [ -d "qcom" ]; then
-            cp -r qcom $out/lib/firmware/
+            cp -r qcom/* $out/lib/firmware/qcom/
         fi
 
         # 2. ADSP / Hexagon DSP blobs
         if [ -d "firmware/rfsa/adsp" ]; then
             cp -r firmware/rfsa/adsp/* $out/lib/firmware/rfsa/adsp/
+        fi
+        
+        # 2b. Nanosic Firmware
+        if [ -d "nanosic" ]; then
+            cp -r nanosic/* $out/lib/firmware/nanosic/
         fi
 
         # 3. Executables
