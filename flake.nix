@@ -6,9 +6,13 @@
   };
 
   outputs = { self, nixpkgs }: let
-    pkgs = nixpkgs.legacyPackages.x86_64-linux; # Assumes evaluating from x86_64-linux, but the firmware itself is arch-independent
+    systems = [ "x86_64-linux" "aarch64-linux" ];
+    forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f system);
   in {
-    packages.aarch64-linux.default = pkgs.stdenvNoCC.mkDerivation {
+    packages = forAllSystems (system: let
+      pkgs = nixpkgs.legacyPackages.${system};
+    in {
+      default = pkgs.stdenvNoCC.mkDerivation {
       pname = "sheng-firmware-full";
       version = "1.0.0";
 
@@ -63,9 +67,6 @@
 
         runHook postInstall
       '';
-    };
-
-    # Also expose it for cross-compilation evaluation
-    packages.x86_64-linux.default = self.packages.aarch64-linux.default;
+    });
   };
 }
