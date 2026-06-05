@@ -37,18 +37,25 @@
             cp -r qcom $out/lib/firmware/
         fi
 
-        # 2. ADSP / Hexagon DSP blobs
+        # 2. Device firmware stored in top-level vendor directories
+        for dir in ath12k nanosic novatek qca; do
+            if [ -d "$dir" ]; then
+                cp -r "$dir" $out/lib/firmware/
+            fi
+        done
+
+        # 3. ADSP / Hexagon DSP blobs
         if [ -d "firmware/rfsa/adsp" ]; then
             cp -r firmware/rfsa/adsp/* $out/lib/firmware/rfsa/adsp/
         fi
 
-        # 3. Executables
+        # 4. Executables
         if [ -d "bin" ]; then
             cp -r bin/* $out/bin/
             chmod +x $out/bin/adsprpcd
         fi
 
-        # 4. Libraries
+        # 5. Libraries
         # Note: Bionic Android libs are not directly usable by glibc, but we ship them just in case they are needed for hybris/proot.
         if [ -d "lib64" ]; then
             cp -r lib64/* $out/lib64/
@@ -60,7 +67,7 @@
             cp -r lib/* $out/usr/lib/android-vendor/lib/
         fi
 
-        # 5. Configurations
+        # 6. Configurations
         if [ -d "etc/sensors" ]; then
             cp -r etc/sensors/* $out/etc/sensors/
         fi
